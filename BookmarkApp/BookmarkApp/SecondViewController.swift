@@ -18,6 +18,10 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupUI()
+    }
+    
+    func setupUI() {
         label.text = bookmarks.isEmpty ? "Bookmark App" : "List"
         label.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
         label.textColor = .black
@@ -134,6 +138,44 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
         alertController.addAction(cancelAction)
         alertController.addAction(createAction)
         present(alertController, animated: true)
+    }
+    
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        let deleteAction = UITableViewRowAction(style: .destructive, title: "Delete") { _, indexPath in
+            removeBookmark(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .automatic)
+            tableView.reloadData()
+        }
+        
+        let changeAction = UITableViewRowAction(style: .default, title: "Change") { _, indexPath in
+            let ChangeAlert = UIAlertController(title: "Change", message: nil, preferredStyle: .alert)
+            ChangeAlert.addTextField() { (textField) in
+                textField.placeholder = "Bookmark title"
+            }
+            ChangeAlert.addTextField() { (textField) in
+                textField.placeholder = "Bookmark link"
+            }
+            
+            let cancelAction = UIAlertAction(title: "Cancel", style: .default)
+            let createAction = UIAlertAction(title: "Save", style: .cancel) {_ in
+                let bookmarkName = ChangeAlert.textFields![0].text
+                let bookmarkLink = ChangeAlert.textFields![1].text
+                
+                if bookmarkName != "" && bookmarkLink != "" {
+                    bookmarks[indexPath.row].name = bookmarkName!
+                    bookmarks[indexPath.row].link = bookmarkLink!
+                    self.tableView.reloadData()
+                }
+            }
+            
+            ChangeAlert.addAction(cancelAction)
+            ChangeAlert.addAction(createAction)
+            self.present(ChangeAlert, animated: true)
+        }
+        
+        changeAction.backgroundColor = .blue
+        deleteAction.backgroundColor = .red
+        return [deleteAction, changeAction]
     }
     
     func updateUi() {
