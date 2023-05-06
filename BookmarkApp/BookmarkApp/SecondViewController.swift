@@ -108,36 +108,7 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             self.button.titleLabel?.alpha = 1.0
         }
-        
-        let alertController = UIAlertController(title: "Add", message: nil, preferredStyle: .alert)
-        
-        alertController.addTextField() { (textField) in
-            textField.placeholder = "Bookmark title"
-        }
-        alertController.addTextField() { (textField) in
-            textField.placeholder = "Bookmark link"
-        }
-        
-        let cancelAction = UIAlertAction(title: "Cancel", style: .default)
-        let createAction = UIAlertAction(title: "Save", style: .cancel) {_ in
-            let bookmarkName = alertController.textFields![0].text
-            let bookmarkLink = alertController.textFields![1].text
-            
-            if bookmarkName != "" && bookmarkLink != "" {
-                addBookmark(name: bookmarkName!, link: bookmarkLink!)
-                self.tableView.reloadData()
-                self.updateUi()
-            }
-            else {
-                let requiredText = UIAlertController(title: "Write bookmark correctly", message: nil, preferredStyle: .alert)
-                let enterText = UIAlertAction(title: "OK", style: .default)
-                requiredText.addAction(enterText)
-                self.present(requiredText, animated: true)
-            }
-        }
-        alertController.addAction(cancelAction)
-        alertController.addAction(createAction)
-        present(alertController, animated: true)
+        AddOrChangeAlert(title: "Add", index: nil)
     }
     
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
@@ -148,29 +119,7 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
         }
         
         let changeAction = UITableViewRowAction(style: .default, title: "Change") { _, indexPath in
-            let ChangeAlert = UIAlertController(title: "Change", message: nil, preferredStyle: .alert)
-            ChangeAlert.addTextField() { (textField) in
-                textField.placeholder = "Bookmark title"
-            }
-            ChangeAlert.addTextField() { (textField) in
-                textField.placeholder = "Bookmark link"
-            }
-            
-            let cancelAction = UIAlertAction(title: "Cancel", style: .default)
-            let createAction = UIAlertAction(title: "Save", style: .cancel) {_ in
-                let bookmarkName = ChangeAlert.textFields![0].text
-                let bookmarkLink = ChangeAlert.textFields![1].text
-                
-                if bookmarkName != "" && bookmarkLink != "" {
-                    bookmarks[indexPath.row].name = bookmarkName!
-                    bookmarks[indexPath.row].link = bookmarkLink!
-                    self.tableView.reloadData()
-                }
-            }
-            
-            ChangeAlert.addAction(cancelAction)
-            ChangeAlert.addAction(createAction)
-            self.present(ChangeAlert, animated: true)
+            self.AddOrChangeAlert(title: "Change", index: indexPath.row)
         }
         
         changeAction.backgroundColor = .blue
@@ -187,6 +136,45 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
             label.text = "List"
             mainLabel.isHidden = true
         }
+    }
+    
+    func AddOrChangeAlert(title: String, index: Int?) {
+        let alertController = UIAlertController(title: title, message: nil, preferredStyle: .alert)
+        
+        alertController.addTextField() { (textField) in
+            textField.placeholder = "Bookmark title"
+        }
+        alertController.addTextField() { (textField) in
+            textField.placeholder = "Bookmark link"
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .default)
+        let createAction = UIAlertAction(title: "Save", style: .cancel) { _ in
+            
+            let bookmarkName = alertController.textFields![0].text
+            let bookmarkLink = alertController.textFields![1].text
+            
+            if bookmarkName != "" && bookmarkLink != "" {
+                if title == "Add" {
+                    addBookmark(name: bookmarkName!, link: bookmarkLink!)
+                }
+                else {
+                    bookmarks[index!].name = bookmarkName!
+                    bookmarks[index!].link = bookmarkLink!
+                }
+                self.tableView.reloadData()
+                self.updateUi()
+            }
+            else {
+                let requiredText = UIAlertController(title: "Write bookmark correctly", message: nil, preferredStyle: .alert)
+                let enterText = UIAlertAction(title: "OK", style: .default)
+                requiredText.addAction(enterText)
+                self.present(requiredText, animated: true)
+            }
+        }
+        alertController.addAction(cancelAction)
+        alertController.addAction(createAction)
+        present(alertController, animated: true)
     }
 }
 
@@ -248,3 +236,4 @@ class CustomCell: UITableViewCell {
 //        return cell
 //    }
 //}
+
