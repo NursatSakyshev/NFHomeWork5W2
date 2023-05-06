@@ -7,23 +7,34 @@
 
 import Foundation
 
-var bookmarks: [[String: String]] {
+struct Bookmark: Codable {
+    var name: String
+    var link: String
+}
+
+var bookmarks: [Bookmark] {
     set {
-        UserDefaults.standard.set(newValue, forKey: "bookmarks")
+        do {
+            let encoder = JSONEncoder()
+            let data = try encoder.encode(newValue)
+            UserDefaults.standard.set(data, forKey: "bookmarks")
+        } catch {
+            print("Unable to Encode Array of Notes (\(error))")
+        }
     }
-    
+
     get {
-        if let array = UserDefaults.standard.array(forKey: "bookmarks") as? [[String: String]] {
-            return array
+        let defaultValue: [Bookmark] = []
+        guard let data = try? UserDefaults.standard.object(forKey: "bookmarks") as? Data else {
+            return defaultValue
         }
-        else {
-            return []
-        }
+        let value = try? JSONDecoder().decode([Bookmark].self, from: data)
+        return value ?? defaultValue
     }
 }
 
 func addBookmark(name: String, link: String) {
-    bookmarks.append(["name": name, "link": link])
+    bookmarks.append(Bookmark(name: name, link: link))
 }
 
 func removeBookmark(at Index: Int) {
