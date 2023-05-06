@@ -14,7 +14,7 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
     let label = UILabel()
     let button = UIButton()
     let tableView = UITableView()
-    
+    var date = Date()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -92,6 +92,7 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
         let bookmark = bookmarks[indexPath.row]
         cell.name.text = bookmark.name
         cell.linkImage.image = UIImage(named: "link")
+        cell.date.text = "\(bookmark.date.displayMinAndSeconds())  \(bookmark.date.getDay())"
         return cell
     }
     
@@ -157,11 +158,12 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
             
             if bookmarkName != "" && bookmarkLink != "" {
                 if title == "Add" {
-                    addBookmark(name: bookmarkName!, link: bookmarkLink!)
+                    addBookmark(name: bookmarkName!, link: bookmarkLink!, date: self.date)
                 }
                 else {
                     bookmarks[index!].name = bookmarkName!
                     bookmarks[index!].link = bookmarkLink!
+                    bookmarks[index!].date = self.date
                 }
                 self.tableView.reloadData()
                 self.updateUi()
@@ -180,28 +182,36 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
 }
 
 class CustomCell: UITableViewCell {
+    let date = UILabel()
     let name = UILabel()
     let linkImage = UIImageView()
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         addSubview(name)
         addSubview(linkImage)
+        addSubview(date)
         
-        [name, linkImage].forEach {
+        [name, linkImage, date].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
         
+        date.textColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
         
         NSLayoutConstraint.activate([
             name.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 16),
-            name.topAnchor.constraint(equalTo: self.topAnchor, constant: 39),
+            name.topAnchor.constraint(equalTo: self.topAnchor, constant: 14),
             name.widthAnchor.constraint(equalToConstant: 326),
             name.heightAnchor.constraint(equalToConstant: 24),
             
             linkImage.leftAnchor.constraint(equalTo: name.rightAnchor, constant: 11),
             linkImage.topAnchor.constraint(equalTo: self.topAnchor, constant: 42),
             linkImage.widthAnchor.constraint(equalToConstant: 18),
-            linkImage.heightAnchor.constraint(equalToConstant: 18)
+            linkImage.heightAnchor.constraint(equalToConstant: 18),
+            
+            date.topAnchor.constraint(equalTo: name.bottomAnchor,constant: 15),
+            date.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 16),
+            date.widthAnchor.constraint(equalToConstant: 326),
+            date.heightAnchor.constraint(equalToConstant: 16)
         ])
     }
     
@@ -211,3 +221,19 @@ class CustomCell: UITableViewCell {
 }
 
 
+
+extension Date {
+    func displayMinAndSeconds() -> String {
+        let calendar = Calendar.current
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm"
+        let stringFormat = formatter.string(from: self)
+        return stringFormat
+    }
+    
+    func getDay() -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd.MM.YY"
+        return formatter.string(from: self)
+    }
+}

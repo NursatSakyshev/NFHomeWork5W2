@@ -10,6 +10,7 @@ import Foundation
 struct Bookmark: Codable {
     var name: String
     var link: String
+    var date: Date
 }
 
 var bookmarks: [Bookmark] {
@@ -33,8 +34,8 @@ var bookmarks: [Bookmark] {
     }
 }
 
-func addBookmark(name: String, link: String) {
-    bookmarks.append(Bookmark(name: name, link: link))
+func addBookmark(name: String, link: String, date: Date) {
+    bookmarks.append(Bookmark(name: name, link: link, date: date))
 }
 
 func removeBookmark(at Index: Int) {
