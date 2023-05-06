@@ -15,7 +15,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         window = UIWindow()
         window?.makeKeyAndVisible()
-        window?.rootViewController = SecondViewController()
+        let isOnboardingSeen = UserDefaults.standard.bool(forKey: "isOnboardingSeen")
+
+        if isOnboardingSeen {
+            window?.rootViewController = SecondViewController()
+        }
+        else {
+            window?.rootViewController = UINavigationController(rootViewController: ViewController())
+        }
         
         return true
     }

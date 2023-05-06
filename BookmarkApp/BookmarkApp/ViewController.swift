@@ -21,6 +21,11 @@ class ViewController: UIViewController {
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
         button.layer.cornerRadius = 16
         button.backgroundColor = .white
+        button.addAction(.init(handler: { _ in
+            UserDefaults.standard.set(true, forKey: "isOnboardingSeen")
+            let secondViewController = SecondViewController()
+            self.navigationController?.pushViewController(secondViewController, animated: true)
+        }), for: .touchUpInside)
         view.addSubview(button)
         
         button.translatesAutoresizingMaskIntoConstraints = false

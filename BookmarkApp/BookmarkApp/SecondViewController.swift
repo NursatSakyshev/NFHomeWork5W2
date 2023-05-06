@@ -19,6 +19,7 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        navigationItem.hidesBackButton = true
     }
     
     func setupUI() {
@@ -209,31 +210,4 @@ class CustomCell: UITableViewCell {
     }
 }
 
-
-//extension ViewController: UITableViewDelegate, UITableViewDataSource {
-////    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-////        return 5
-////    }
-////
-////    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//////        let cell = tableView.dequeueReusableCell(withIdentifier: "CellIdentifier", for: indexPath)
-////        let cell =
-////        cell.textLabel?.text = "hello"
-////        return cell
-////    }
-////
-////    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-////        tableView.deselectRow(at: indexPath, animated: true)
-////        print(bookmarks[indexPath.row])
-////    }
-//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        return 10
-//    }
-//
-//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        let cell = UITableViewCell(style: .default, reuseIdentifier: "Cell")
-//        cell.textLabel?.text = "Row \(indexPath.row + 1)"
-//        return cell
-//    }
-//}
 
