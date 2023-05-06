@@ -11,7 +11,7 @@ class SecondViewController: UIViewController {
     let mainLabel = UILabel()
     let label = UILabel()
     let button = UIButton()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -47,6 +47,9 @@ class SecondViewController: UIViewController {
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
         button.layer.cornerRadius = 16
         button.backgroundColor = .black
+        button.addAction(.init(handler: { _ in
+            self.buttonDidPress()
+        }), for: .touchUpInside)
         view.addSubview(button)
         
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -56,5 +59,37 @@ class SecondViewController: UIViewController {
             button.widthAnchor.constraint(equalToConstant: 358),
             button.heightAnchor.constraint(equalToConstant: 58)
         ])
+    }
+    
+    func buttonDidPress() {
+        //        button.titleLabel?.alpha = 0.5
+        //        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+        //            self.button.titleLabel?.alpha = 1.0
+        //        }
+        
+        UIView.animate(withDuration: 0.5,
+                       animations: {
+            self.button.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
+        },
+                       completion: { _ in
+            UIView.animate(withDuration: 0.5) {
+                self.button.transform = CGAffineTransform.identity
+            }
+        })
+        
+        let alertController = UIAlertController(title: "Add", message: nil, preferredStyle: .alert)
+        
+        alertController.addTextField() { (textField) in
+            textField.placeholder = "Bookmark title"
+        }
+        alertController.addTextField() { (textField) in
+            textField.placeholder = "Bookmark link"
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .default)
+        let createAction = UIAlertAction(title: "Save", style: .default)
+        alertController.addAction(cancelAction)
+        alertController.addAction(createAction)
+        present(alertController, animated: true)
     }
 }
