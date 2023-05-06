@@ -6,8 +6,9 @@
 //
 
 import UIKit
+import SafariServices
 
-class SecondViewController: UIViewController, UITableViewDataSource {
+class SecondViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     let mainLabel = UILabel()
     let label = UILabel()
@@ -17,7 +18,7 @@ class SecondViewController: UIViewController, UITableViewDataSource {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        label.text = "Bookmark App"
+        label.text = bookmarks.isEmpty ? "Bookmark App" : "List"
         label.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
         label.textColor = .black
         view.addSubview(label)
@@ -30,6 +31,7 @@ class SecondViewController: UIViewController, UITableViewDataSource {
         
         view.backgroundColor = .white
         tableView.dataSource = self
+        tableView.delegate = self
         tableView.register(CustomCell.self, forCellReuseIdentifier: "cell")
         tableView.rowHeight = 74
         view.addSubview(tableView)
@@ -41,21 +43,22 @@ class SecondViewController: UIViewController, UITableViewDataSource {
             tableView.rightAnchor.constraint(equalTo: view.rightAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
-
-//        mainLabel.text = "Save your first\nbookmark"
-//        mainLabel.textColor = .black
-//        mainLabel.font = UIFont.systemFont(ofSize: 36, weight: .bold)
-//        mainLabel.center = view.center
-//        mainLabel.textAlignment = .center
-//        mainLabel.numberOfLines = 0
-//        view.addSubview(mainLabel)
         
-//        mainLabel.translatesAutoresizingMaskIntoConstraints = false
-//        NSLayoutConstraint.activate([
-//            mainLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-//            mainLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
-//        ])
-
+        mainLabel.text = "Save your first\nbookmark"
+        mainLabel.textColor = .black
+        mainLabel.font = UIFont.systemFont(ofSize: 36, weight: .bold)
+        mainLabel.center = view.center
+        mainLabel.textAlignment = .center
+        mainLabel.numberOfLines = 0
+        mainLabel.isHidden = bookmarks.isEmpty ? false : true
+        view.addSubview(mainLabel)
+        
+        mainLabel.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            mainLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            mainLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+        ])
+        
         button.setTitle("Add bookmark", for: .normal)
         button.setTitleColor(UIColor.white, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
@@ -87,26 +90,20 @@ class SecondViewController: UIViewController, UITableViewDataSource {
         return cell
     }
     
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        guard let url = URL(string: "https://\(bookmarks[indexPath.row].link)") else {
+            return
+        }
+        let safariVC = SFSafariViewController(url: url)
+        present(safariVC, animated: true)
     }
     
-    
     func buttonDidPress() {
-        //        button.titleLabel?.alpha = 0.5
-        //        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-        //            self.button.titleLabel?.alpha = 1.0
-        //        }
-        
-        UIView.animate(withDuration: 0.5,
-                       animations: {
-            self.button.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
-        },
-                       completion: { _ in
-            UIView.animate(withDuration: 0.5) {
-                self.button.transform = CGAffineTransform.identity
-            }
-        })
+        button.titleLabel?.alpha = 0.5
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            self.button.titleLabel?.alpha = 1.0
+        }
         
         let alertController = UIAlertController(title: "Add", message: nil, preferredStyle: .alert)
         
@@ -125,6 +122,7 @@ class SecondViewController: UIViewController, UITableViewDataSource {
             if bookmarkName != "" && bookmarkLink != "" {
                 addBookmark(name: bookmarkName!, link: bookmarkLink!)
                 self.tableView.reloadData()
+                self.updateUi()
             }
             else {
                 let requiredText = UIAlertController(title: "Write bookmark correctly", message: nil, preferredStyle: .alert)
@@ -136,6 +134,17 @@ class SecondViewController: UIViewController, UITableViewDataSource {
         alertController.addAction(cancelAction)
         alertController.addAction(createAction)
         present(alertController, animated: true)
+    }
+    
+    func updateUi() {
+        if bookmarks.isEmpty {
+            label.text = "Bookmark App"
+            mainLabel.isHidden = false
+        }
+        else {
+            label.text = "List"
+            mainLabel.isHidden = true
+        }
     }
 }
 
@@ -150,21 +159,21 @@ class CustomCell: UITableViewCell {
         [name, linkImage].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
+        
+        
         NSLayoutConstraint.activate([
             name.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 16),
             name.topAnchor.constraint(equalTo: self.topAnchor, constant: 39),
             name.widthAnchor.constraint(equalToConstant: 326),
-            name.heightAnchor.constraint(equalToConstant: 24)
-        ])
-        
-        NSLayoutConstraint.activate([
+            name.heightAnchor.constraint(equalToConstant: 24),
+            
             linkImage.leftAnchor.constraint(equalTo: name.rightAnchor, constant: 11),
             linkImage.topAnchor.constraint(equalTo: self.topAnchor, constant: 42),
             linkImage.widthAnchor.constraint(equalToConstant: 18),
             linkImage.heightAnchor.constraint(equalToConstant: 18)
         ])
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
