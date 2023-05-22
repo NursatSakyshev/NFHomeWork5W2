@@ -8,6 +8,7 @@
 import UIKit
 
 class ViewController: UIViewController {
+    
     var label: UILabel!
     let image = UIImageView(image: UIImage(named: "image"))
     let button = UIButton()
