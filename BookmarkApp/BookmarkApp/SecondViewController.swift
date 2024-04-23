@@ -191,6 +191,10 @@ class CustomCell: UITableViewCell {
     let linkImage = UIImageView()
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        setupUI()
+    }
+    
+    func setupUI() {
         addSubview(name)
         addSubview(linkImage)
         addSubview(date)
