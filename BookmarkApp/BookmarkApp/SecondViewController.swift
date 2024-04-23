@@ -14,7 +14,6 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
     let label = UILabel()
     let button = UIButton()
     let tableView = UITableView()
-    var date = Date()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -129,7 +128,7 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
         return [deleteAction, changeAction]
     }
     
-    func updateUi() {
+    func updateUI() {
         if bookmarks.isEmpty {
             label.text = "Bookmark App"
             mainLabel.isHidden = false
@@ -158,15 +157,15 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
             
             if bookmarkName != "" && bookmarkLink != "" {
                 if title == "Add" {
-                    addBookmark(name: bookmarkName!, link: bookmarkLink!, date: self.date)
+                    addBookmark(name: bookmarkName!, link: bookmarkLink!, date: Date())
                 }
                 else {
                     bookmarks[index!].name = bookmarkName!
                     bookmarks[index!].link = bookmarkLink!
-                    bookmarks[index!].date = self.date
+                    bookmarks[index!].date = Date()
                 }
                 self.tableView.reloadData()
-                self.updateUi()
+                self.updateUI()
             }
             else {
                 let requiredText = UIAlertController(title: "Write bookmark correctly", message: nil, preferredStyle: .alert)
