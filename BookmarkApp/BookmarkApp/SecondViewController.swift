@@ -30,7 +30,7 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
         label.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             label.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            label.topAnchor.constraint(equalTo: view.topAnchor, constant: 56)
+            label.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10)
         ])
         
         view.backgroundColor = .white
@@ -116,6 +116,7 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
         let deleteAction = UITableViewRowAction(style: .destructive, title: "Delete") { _, indexPath in
             removeBookmark(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .automatic)
+            self.updateUI()
             tableView.reloadData()
         }
         
@@ -147,6 +148,10 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
         }
         alertController.addTextField() { (textField) in
             textField.placeholder = "Bookmark link"
+        }
+        if title == "Change" {
+            alertController.textFields![0].text = bookmarks[index!].name
+            alertController.textFields![1].text = bookmarks[index!].link
         }
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .default)
