@@ -22,10 +22,14 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
     }
     
     func setupUI() {
+    
+        [label, tableView, mainLabel, button].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview($0)
+        }
         label.text = bookmarks.isEmpty ? "Bookmark App" : "List"
         label.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
         label.textColor = .black
-        view.addSubview(label)
         
         label.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -38,9 +42,7 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
         tableView.delegate = self
         tableView.register(CustomCell.self, forCellReuseIdentifier: "cell")
         tableView.rowHeight = 74
-        view.addSubview(tableView)
         
-        tableView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 10),
             tableView.leftAnchor.constraint(equalTo: view.leftAnchor),
@@ -55,9 +57,7 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
         mainLabel.textAlignment = .center
         mainLabel.numberOfLines = 0
         mainLabel.isHidden = bookmarks.isEmpty ? false : true
-        view.addSubview(mainLabel)
         
-        mainLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             mainLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             mainLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
@@ -71,9 +71,7 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
         button.addAction(.init(handler: { _ in
             self.buttonDidPress()
         }), for: .touchUpInside)
-        view.addSubview(button)
         
-        button.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             button.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50),
             button.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -184,51 +182,6 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
         present(alertController, animated: true)
     }
 }
-
-class CustomCell: UITableViewCell {
-    let date = UILabel()
-    let name = UILabel()
-    let linkImage = UIImageView()
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        setupUI()
-    }
-    
-    func setupUI() {
-        addSubview(name)
-        addSubview(linkImage)
-        addSubview(date)
-        
-        [name, linkImage, date].forEach {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-        }
-        
-        date.textColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
-        
-        NSLayoutConstraint.activate([
-            name.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 16),
-            name.topAnchor.constraint(equalTo: self.topAnchor, constant: 14),
-            name.widthAnchor.constraint(equalToConstant: 326),
-            name.heightAnchor.constraint(equalToConstant: 24),
-            
-            linkImage.leftAnchor.constraint(equalTo: name.rightAnchor, constant: 11),
-            linkImage.topAnchor.constraint(equalTo: self.topAnchor, constant: 42),
-            linkImage.widthAnchor.constraint(equalToConstant: 18),
-            linkImage.heightAnchor.constraint(equalToConstant: 18),
-            
-            date.topAnchor.constraint(equalTo: name.bottomAnchor,constant: 15),
-            date.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 16),
-            date.widthAnchor.constraint(equalToConstant: 326),
-            date.heightAnchor.constraint(equalToConstant: 16)
-        ])
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
-
-
 
 extension Date {
     func displayMinAndSeconds() -> String {
